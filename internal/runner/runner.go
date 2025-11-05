@@ -12,11 +12,11 @@ import (
 	"time"
 
 	"github.com/logrusorgru/aurora"
+	"github.com/lucasolslund/dnsx/libs/dnsx"
 	"github.com/miekg/dns"
 	"github.com/pkg/errors"
 	asnmap "github.com/projectdiscovery/asnmap/libs"
 	"github.com/projectdiscovery/clistats"
-	"github.com/projectdiscovery/dnsx/libs/dnsx"
 	"github.com/projectdiscovery/goconfig"
 	"github.com/projectdiscovery/gologger"
 	"github.com/projectdiscovery/hmap/store/hybrid"
@@ -693,7 +693,7 @@ func (r *Runner) worker() {
 				hasAxfrData = len(axfrData.DNSData) > 0
 			}
 
-			// if the query type is only AFXR then output only if we have results (ref: https://github.com/projectdiscovery/dnsx/issues/230#issuecomment-1256659249)
+			// if the query type is only AFXR then output only if we have results (ref: https://github.com/lucasolslund/dnsx/issues/230#issuecomment-1256659249)
 			if len(r.dnsx.Options.QuestionTypes) == 1 && !hasAxfrData && !r.options.JSON {
 				continue
 			}
@@ -744,13 +744,40 @@ func (r *Runner) worker() {
 		}
 
 		if r.options.JSON {
-			var marshalOptions []dnsx.MarshalOption
-			if r.options.OmitRaw {
-				marshalOptions = append(marshalOptions, dnsx.WithoutAllRecords())
+			// START: Modified code to output CSV from AllRecords
+			
+			// Ensure we have data to process (using AllRecords as you pointed out)
+			if dnsData.DNSData != nil && len(dnsData.DNSData.AllRecords) > 0 {
+				
+				// Iterate over each raw record string
+				for _, rawRecord := range dnsData.DNSData.AllRecords {
+					
+					// Split the raw string by whitespace
+					parts := strings.Fields(rawRecord)
+
+					// A valid 'A' or 'CNAME' record string has 5 parts:
+					// [Domain] [TTL] [IN] [Type] [Value]
+					
+					// We filter for lines that have 5 parts and the type is "A" or "CNAME"
+					if len(parts) == 5 && (parts[3] == "A" || parts[3] == "CNAME") {
+						domain := strings.TrimSuffix(parts[0], ".") // Remove trailing dot
+						ttl := parts[1]
+						recordType := parts[3]
+						recordValue := strings.TrimSuffix(parts[4], ".") // Remove trailing dot from CNAME value
+
+						// Format the line as CSV
+						csvLine := fmt.Sprintf("%s,%s,%s,%s", domain, ttl, recordType, recordValue)
+						
+						// Send the CSV line to the output channel
+						r.outputchan <- csvLine
+					}
+					// Other lines (like SOA, comments, OPT) will be skipped
+				}
 			}
-			jsons, _ := dnsData.JSON(marshalOptions...)
-			r.outputchan <- jsons
-			continue
+			
+			// We must 'continue' to skip all the other output logic below
+			continue 
+			// END: Modified code
 		}
 		if r.options.Raw {
 			r.outputchan <- dnsData.Raw

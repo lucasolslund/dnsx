@@ -6,9 +6,9 @@
 <h4 align="center">A fast and multi-purpose DNS toolkit designed for running DNS queries</h4>
 
 <p align="center">
-<a href="https://goreportcard.com/report/github.com/projectdiscovery/dnsx"><img src="https://goreportcard.com/badge/github.com/projectdiscovery/dnsx"></a>
-<a href="https://github.com/projectdiscovery/dnsx/issues"><img src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat"></a>
-<a href="https://github.com/projectdiscovery/dnsx/releases"><img src="https://img.shields.io/github/release/projectdiscovery/dnsx"></a>
+<a href="https://goreportcard.com/report/github.com/lucasolslund/dnsx"><img src="https://goreportcard.com/badge/github.com/lucasolslund/dnsx"></a>
+<a href="https://github.com/lucasolslund/dnsx/issues"><img src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat"></a>
+<a href="https://github.com/lucasolslund/dnsx/releases"><img src="https://img.shields.io/github/release/lucasolslund/dnsx"></a>
 <a href="https://twitter.com/pdiscoveryio"><img src="https://img.shields.io/twitter/follow/pdiscoveryio.svg?logo=twitter"></a>
 <a href="https://discord.gg/projectdiscovery"><img src="https://img.shields.io/discord/695645237418131507.svg?logo=discord"></a>
 </p>
@@ -32,7 +32,7 @@
 # Features
 
 <h1 align="left">
-  <img src="https://github.com/projectdiscovery/dnsx/assets/8293321/73fe69a0-15b8-4b54-bacc-e201edd90103" alt="dnsx" width="700px"></a>
+  <img src="https://github.com/lucasolslund/dnsx/assets/8293321/73fe69a0-15b8-4b54-bacc-e201edd90103" alt="dnsx" width="700px"></a>
   <br>
 </h1>
 
@@ -51,7 +51,7 @@
 `dnsx` requires **go1.21** to install successfully. Run the following command to install the latest version: 
 
 ```sh
-go install -v github.com/projectdiscovery/dnsx/cmd/dnsx@latest
+go install -v github.com/lucasolslund/dnsx/cmd/dnsx@latest
 ```
 
 # Usage
@@ -241,7 +241,7 @@ api.hackerone.com [AS13335, CLOUDFLARENET, US]
 support.hackerone.com [AS13335, CLOUDFLARENET, US]
 ```
 
-Probe using [dns status code](https://github.com/projectdiscovery/dnsx/wiki/RCODE-ID-VALUE-Mapping) on given list of (sub)domains:
+Probe using [dns status code](https://github.com/lucasolslund/dnsx/wiki/RCODE-ID-VALUE-Mapping) on given list of (sub)domains:
 
 ```console
 subfinder -silent -d hackerone.com | dnsx -silent -rcode noerror,servfail,refused
@@ -409,7 +409,7 @@ dnsx -l subdomain_list.txt -wd airbnb.com -o output.txt
 
 ### Dnsx as a library
 
-It's possible to use the library directly in your golang programs. The following code snippets is an example of use in golang programs. Please refer to [here](https://pkg.go.dev/github.com/projectdiscovery/dnsx@v1.1.0/libs/dnsx) for detailed package configuration and usage.
+It's possible to use the library directly in your golang programs. The following code snippets is an example of use in golang programs. Please refer to [here](https://pkg.go.dev/github.com/lucasolslund/dnsx@v1.1.0/libs/dnsx) for detailed package configuration and usage.
 
 ```go
 package main
@@ -417,7 +417,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/projectdiscovery/dnsx/libs/dnsx"
+	"github.com/lucasolslund/dnsx/libs/dnsx"
 )
 
 func main() {
@@ -460,11 +460,11 @@ func main() {
 # 📋 Notes
 
 - As default, `dnsx` checks for **A** record.
-- As default `dnsx` uses Google, Cloudflare, Quad9 [resolver](https://github.com/projectdiscovery/dnsx/blob/43af78839e237ea8cbafe571df1ab0d6cbe7f445/libs/dnsx/dnsx.go#L31).
+- As default `dnsx` uses Google, Cloudflare, Quad9 [resolver](https://github.com/lucasolslund/dnsx/blob/43af78839e237ea8cbafe571df1ab0d6cbe7f445/libs/dnsx/dnsx.go#L31).
 - Custom resolver list can be loaded using the `r` flag.
 - Domain name (`wd`) input is mandatory for wildcard elimination.
 - DNS record flag can not be used when using wildcard filtering.
 - DNS resolution (`l`) and DNS brute-forcing (`w`) can't be used together.
-- VPN operators tend to filter high DNS/UDP traffic, therefore the tool might experience packets loss (eg. [Mullvad VPN](https://github.com/projectdiscovery/dnsx/issues/221)). Check [this potential solution](./MULLVAD.md).
+- VPN operators tend to filter high DNS/UDP traffic, therefore the tool might experience packets loss (eg. [Mullvad VPN](https://github.com/lucasolslund/dnsx/issues/221)). Check [this potential solution](./MULLVAD.md).
 
 `dnsx` is made with 🖤 by the [projectdiscovery](https://projectdiscovery.io) team.

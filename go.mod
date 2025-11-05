@@ -1,4 +1,4 @@
-module github.com/projectdiscovery/dnsx
+module github.com/lucasolslund/dnsx
 
 go 1.24.0
 
