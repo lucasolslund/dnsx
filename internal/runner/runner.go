@@ -748,7 +748,7 @@ func (r *Runner) worker() {
 			
 			// Ensure we have data to process (using AllRecords as you pointed out)
 			if dnsData.DNSData != nil && len(dnsData.DNSData.AllRecords) > 0 {
-				
+				status_code := dnsData.DNSData.StatusCode
 				// Iterate over each raw record string
 				for _, rawRecord := range dnsData.DNSData.AllRecords {
 					
@@ -766,7 +766,7 @@ func (r *Runner) worker() {
 						recordValue := strings.TrimSuffix(parts[4], ".") // Remove trailing dot from CNAME value
 
 						// Format the line as CSV
-						csvLine := fmt.Sprintf("%s,%s,%s,%s", domain, ttl, recordType, recordValue)
+						csvLine := fmt.Sprintf("%s,%s,%s,%s,%s", domain, ttl, recordType, recordValue, status_code)
 						
 						// Send the CSV line to the output channel
 						r.outputchan <- csvLine
