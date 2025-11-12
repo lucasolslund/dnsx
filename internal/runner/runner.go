@@ -759,13 +759,13 @@ func (r *Runner) worker() {
 					
 					// We filter for lines that have 5 parts and the type is "A" or "CNAME"
 					if len(parts) == 5 && (parts[3] == "A" || parts[3] == "CNAME") {
-						domain := strings.TrimSuffix(parts[0], ".") // Remove trailing dot
+						host := strings.TrimSuffix(parts[0], ".") // Remove trailing dot
 						ttl := parts[1]
 						recordType := parts[3]
 						recordValue := strings.TrimSuffix(parts[4], ".") // Remove trailing dot from CNAME value
 
 						// Format the line as CSV
-						csvLine := fmt.Sprintf("%s,%s,%s,%s", domain, ttl, recordType, recordValue)
+						csvLine := fmt.Sprintf("%s,%s,%s,%s", host, ttl, recordType, recordValue)
 						
 						// Send the CSV line to the output channel
 						r.outputchan <- csvLine
@@ -774,10 +774,9 @@ func (r *Runner) worker() {
 				}
 			}
 			if dnsData.DNSData != nil {
-				domain = dnsData.DNSData.Host
 				statusCode := dnsData.DNSData.StatusCode
 				statusCodeRaw := dnsData.DNSData.StatusCodeRaw
-				csvLine := fmt.Sprintf("%s,%s,%s,%s", domain, 0, statusCode, statusCodeRaw)
+				csvLine := fmt.Sprintf("%s,0,%s,%d", domain, statusCode, statusCodeRaw)
 				
 				// Send the CSV line to the output channel
 				r.outputchan <- csvLine
@@ -786,6 +785,9 @@ func (r *Runner) worker() {
 			// We must 'continue' to skip all the other output logic below
 			continue 
 			// END: Modified code
+		} else {
+			csvLine := fmt.Sprintf("%s,0,NOJSON,-1", domain)
+			r.outputchan <- csvLine
 		}
 		if r.options.Raw {
 			r.outputchan <- dnsData.Raw
